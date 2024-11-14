@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Table</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    .product-image {
+      width: 100px;
+      height: auto;
+    }
+    #btn{
+     
+      position: fixed;
+      top: 20px;  
+      right: 20px; 
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      z-index: 1000; 
+    }
+button {
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Product Table</h1>
+  <table id="productTable">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Availability Status</th>
+        <th>Image</th>
+        <th>Cart</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+  <div id="btn">
+  <button onclick="viewCart()">View Cart</button>
+</div>
+  <script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || []; 
+
+    fetch('https://dummyjson.com/products/search?q=phone')
+      .then(res => res.json())
+      .then(data => {
+        const products = data.products;
+        const tableBody = document.querySelector("#productTable tbody");
+
+        products.forEach(product => {
+          const row = tableBody.insertRow();
+          row.innerHTML = `
+            <td>${product.id}</td>
+            <td>${product.title}</td>
+            <td>${product.category}</td>
+            <td>${product.description}</td>
+            <td>${product.price}</td>
+            <td>${product.availabilityStatus}</td>
+            <td>
+              <img src="${product.images[0]}" alt='${product.title}' class="product-image">
+            </td>
+            <td><button class="cart-btn" data-id="${product.id}">Add to Cart</button></td>
+          `;
+
+          const cartBtn = row.querySelector('.cart-btn');
+          cartBtn.addEventListener('click', () => {
+            toggleCart(product, cartBtn);
+          });
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching products:', error);
+      });
+
+    function toggleCart(product, button) {
+      const index = cart.findIndex(item => item.id === product.id);
+      if (index > -1) {
+        cart.splice(index, 1);
+        button.textContent = 'Add to Cart';
+      } else {
+        cart.push(product);
+        button.textContent = 'Added to Cart';
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      console.log('Cart:', cart);
+    }
+
+    function viewCart() {
+      window.location.href = 'cart.html'; 
+    }
+  </script>
+</body>
+</html>

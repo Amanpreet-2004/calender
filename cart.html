@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    button {
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Shopping Cart</h1>
+  <table id="cartTable">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Price</th>
+        <th>Image</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="cartTableBody">
+    </tbody>
+  </table>
+  
+  <button onclick="clearCart()">Clear Cart</button>
+  <button onclick="goBack()">Go Back to Products</button>
+
+  <script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || []; 
+
+    function displayCart() {
+      const cartTableBody = document.getElementById('cartTableBody');
+      cartTableBody.innerHTML = '';
+
+      cart.forEach(product => {
+        const row = cartTableBody.insertRow();
+        row.innerHTML = `
+          <td>${product.id}</td>
+          <td>${product.title}</td>
+          <td>${product.price}</td>
+          <td><img src="${product.images[0]}" alt='${product.title}' class="product-image" height="60px"></td>
+          <td><button class="remove-btn" data-id="${product.id}">Remove</button></td>
+        `;
+
+        const removeBtn = row.querySelector('.remove-btn');
+        removeBtn.addEventListener('click', () => {
+          removeFromCart(product.id);
+        });
+      });
+    }
+
+    function removeFromCart(productId) {
+      cart = cart.filter(item => item.id !== productId);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      displayCart(); 
+    }
+
+    function clearCart() {
+      cart = [];
+      localStorage.removeItem('cart');
+      displayCart(); 
+    }
+
+    function goBack() {
+      window.location.href = 'data.html'; 
+    }
+
+   
+    displayCart();
+  </script>
+</body>
+</html> 
