@@ -1,0 +1,137 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 10px;
+            margin: 20px;
+        }
+        .month {
+            border: 2px solid black;
+            padding: 10px;
+            text-align: center;
+         
+        }
+        .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            margin-top: 10px;
+           
+        }
+        .day {
+            padding: 8px;
+            min-height: 20px;
+            cursor:pointer;
+        }
+        
+        .header {
+            font-weight: bold;
+            color:rgb(206, 60, 60);
+        }
+        
+        select {
+            margin: 20px;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <h1 style="align-items: center;text-align: center; margin-top: 15px;">Calendar</h1>
+    <select id="yearDropdown"></select>
+    <div class="calendar" id="calendar"></div>
+
+    <script>
+        const calendarElement = document.getElementById('calendar');
+        const yearDropdown = document.getElementById('yearDropdown');
+       
+
+       
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear - 10; year <= currentYear + 10; year++)
+         {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearDropdown.appendChild(option);
+        }
+
+        
+        function aman(year) {
+            calendarElement.innerHTML = '';
+            const months = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+
+            months.forEach((month, index) => {
+                const monthDiv = document.createElement('div');
+                monthDiv.className = 'month';
+                monthDiv.innerHTML = `<h2>${month} ${year}</h2>`;
+                
+                
+                const daysHeader = document.createElement('div');
+                daysHeader.className = 'days header';
+                const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                dayNames.forEach(day => {
+                    const dayDiv = document.createElement('div');
+                    dayDiv.textContent = day;
+                    daysHeader.appendChild(dayDiv);
+                });
+                monthDiv.appendChild(daysHeader);
+
+          
+                const daysDiv = document.createElement('div');
+                daysDiv.className = 'days';
+
+                const firstDay = new Date(year, index).getDay();
+                const lastDate = new Date(year, index+1 , 0).getDate(); 
+
+                
+                for (let i = 0; i < firstDay; i++) {
+                    const emptyDiv = document.createElement('div');
+                    daysDiv.appendChild(emptyDiv);
+                }
+
+                
+                for (let day = 1; day <= lastDate; day++) {
+                    const dayDiv = document.createElement('div');
+                    dayDiv.className = 'day';
+                    dayDiv.textContent = day;
+                    daysDiv.appendChild(dayDiv);
+                }
+
+                monthDiv.appendChild(daysDiv);
+                calendarElement.appendChild(monthDiv);
+            });
+        }
+
+      
+        yearDropdown.addEventListener('change', (event) => {
+           aman(event.target.value);
+        });
+
+       
+        aman(currentYear);
+    </script>
+
+</body>
+</html>  
+
+
+
+
+
+
+
+
+
+
